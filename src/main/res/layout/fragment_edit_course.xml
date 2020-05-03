@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:backgroundTint="?attr/backgroundColor">
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        style="@style/HeaderText"
+        android:text="@string/edit_course" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="15dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            style="@style/BodyText"
+            android:text="@string/course_name" />
+
+        <EditText
+            android:id="@+id/course_name_edittxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/EditTextBox"
+            android:hint="@string/enter_course_name_here"
+            android:inputType="text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="15dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            style="@style/BodyText"
+            android:text="@string/course_code" />
+
+        <EditText
+            android:id="@+id/department_code_edittxt"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            style="@style/EditTextBox"
+            android:hint="@string/example_department_code"
+            android:inputType="textCapCharacters" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BodyText"
+            android:text="@string/dash" />
+
+        <EditText
+            android:id="@+id/number_code_edittxt"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            style="@style/EditTextBox"
+            android:hint="@string/example_course_code"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="15dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            style="@style/BodyText"
+            android:text="@string/start_time" />
+
+        <EditText
+            android:id="@+id/course_start_hour"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            style="@style/EditTextBox"
+            android:hint="@string/sample_start_time_h"
+            android:inputType="number" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BodyText"
+            android:text="@string/colon" />
+
+        <EditText
+            android:id="@+id/course_start_minute"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            style="@style/EditTextBox"
+            android:hint="@string/sample_start_time_m"
+            android:inputType="number" />
+
+        <ToggleButton
+            android:id="@+id/course_start_ampm"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@android:drawable/editbox_background"
+            android:backgroundTint="?attr/toggleButtonBackground"
+            android:textColor="?attr/buttonTextColor"
+            android:textOff="@string/am"
+            android:textOn="@string/pm" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="15dp" >
+
+        <TextView
+            style="@style/BodyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:text="@string/course_length" />
+
+        <EditText
+            android:id="@+id/course_num_hours"
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            style="@style/EditTextBox"
+            android:text="1"
+            android:inputType="numberDecimal" />
+
+        <TextView
+            style="@style/BodyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/hours" />
+<!--        <TextView-->
+<!--            style="@style/BodyText"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="12dp"-->
+<!--            android:text="@string/end_time" />-->
+<!--        <EditText-->
+<!--            android:id="@+id/course_end_hour"-->
+<!--            android:layout_width="70dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textAlignment="center"-->
+<!--            style="@style/EditTextBox"-->
+<!--            android:hint="@string/sample_end_time_h"-->
+<!--            android:inputType="number" />-->
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            style="@style/BodyText"-->
+<!--            android:text="@string/colon" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/course_end_minute"-->
+<!--            android:layout_width="70dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textAlignment="center"-->
+<!--            style="@style/EditTextBox"-->
+<!--            android:hint="@string/sample_end_time_m"-->
+<!--            android:inputType="number" />-->
+<!--        <ToggleButton-->
+<!--            android:id="@+id/course_end_ampm"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:background="@android:drawable/editbox_background"-->
+<!--            android:backgroundTint="?attr/toggleButtonBackground"-->
+<!--            android:textColor="?attr/buttonTextColor"-->
+<!--            android:textOff="@string/am"-->
+<!--            android:textOn="@string/pm" />-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="15dp">
+
+        <ToggleButton
+            android:id="@+id/course_monday_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/style_toggle_button"
+            android:textOff="@string/monday_btn"
+            android:textOn="@string/monday_btn" />
+
+        <ToggleButton
+            android:id="@+id/course_tuesday_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/style_toggle_button"
+            android:textOff="@string/tuesday_btn"
+            android:textOn="@string/tuesday_btn" />
+
+        <ToggleButton
+            android:id="@+id/course_wednesday_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/style_toggle_button"
+            android:textOff="@string/wednesday_btn"
+            android:textOn="@string/wednesday_btn" />
+
+        <ToggleButton
+            android:id="@+id/course_thursday_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/style_toggle_button"
+            android:textOff="@string/thursday_btn"
+            android:textOn="@string/thursday_btn" />
+
+        <ToggleButton
+            android:id="@+id/course_friday_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/style_toggle_button"
+            android:textOff="@string/friday_btn"
+            android:textOn="@string/friday_btn" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/course_color_select_button"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/standard_button"
+            android:textColor="?attr/buttonTextColor"
+            android:text="@string/choose_course_color" />
+
+        <Button
+            android:id="@+id/course_color_look_button"
+            android:layout_width="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/submit_course"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/standard_button"
+        android:textColor="?attr/buttonTextColor"
+        android:text="@string/submit_btn" />
+
+</LinearLayout>

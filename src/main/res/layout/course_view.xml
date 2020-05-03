@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:paddingBottom="15dp">
+
+    <TextView
+        android:id="@+id/course_list_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        style="@style/BodyText"
+        tools:text="Course title" />
+
+    <View
+        android:id="@+id/course_color_view"
+        android:layout_width="30dp"
+        android:layout_gravity="center"
+        android:layout_height="30dp" />
+
+    <ImageButton
+        android:id="@+id/course_list_delete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:src="@android:drawable/ic_menu_delete" />
+
+</LinearLayout>
