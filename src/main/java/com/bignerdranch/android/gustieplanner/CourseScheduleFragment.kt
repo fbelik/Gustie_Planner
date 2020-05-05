@@ -3,13 +3,16 @@ package com.bignerdranch.android.gustieplanner
 import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
-class CourseScheduleActivity: AppCompatActivity() {
+class CourseScheduleFragment: Fragment() {
 
     private val courseScheduleViewModel : CourseScheduleViewModel by lazy {
         ViewModelProviders.of(this).get(CourseScheduleViewModel::class.java)
@@ -20,17 +23,25 @@ class CourseScheduleActivity: AppCompatActivity() {
     private val dayNames = arrayOf("mon", "tues", "wed", "thurs", "fri")
     private val courseOnDay = Array(5) {false}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_course_schedule)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_course_schedule, container, false)
 
-        title = findViewById(R.id.course_schedule_header)
+        title = view.findViewById(R.id.course_schedule_header)
 
-        val sharedPreferences = getSharedPreferences(Keys.sharedPreferencesKey, Context.MODE_PRIVATE)
-        val usersName = sharedPreferences.getString(Keys.nameKey, "") ?: ""
+        return view
+    }
 
+    override fun onStart() {
+        super.onStart()
+
+        val sharedPreferences = activity?.getSharedPreferences(Keys.sharedPreferencesKey, Context.MODE_PRIVATE)
+        val usersName = sharedPreferences?.getString(Keys.nameKey, "") ?: ""
         if (usersName != "") {
-            title.text = usersName + "'s Course Schedule "
+            title.text = "${usersName}'s Course Schedule "
         }
 
         val coursesObserver = Observer<List<Course>> {courses ->
@@ -57,11 +68,11 @@ class CourseScheduleActivity: AppCompatActivity() {
                                 val viewId = resources.getIdentifier(
                                     "${dayNames[day]}_$timeString",
                                     "id",
-                                    applicationContext.packageName
+                                    activity?.packageName
                                 )
-                                val view = findViewById<LinearLayout>(viewId)
+                                val view = getView()?.findViewById<LinearLayout>(viewId)
 
-                                val text = TextView(this)
+                                val text = TextView(activity)
                                 text.text = course.name
                                 text.setTextColor(resources.getColor(R.color.black))
                                 text.textSize = 10f
@@ -76,7 +87,7 @@ class CourseScheduleActivity: AppCompatActivity() {
                                 text.gravity = Gravity.CENTER
                                 text.setBackgroundColor(course.color)
 
-                                view.addView(text)
+                                view?.addView(text)
                             }
                         }
                     }

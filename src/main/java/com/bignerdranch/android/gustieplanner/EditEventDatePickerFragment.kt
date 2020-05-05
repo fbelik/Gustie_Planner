@@ -7,33 +7,26 @@ import android.widget.DatePicker
 import androidx.fragment.app.DialogFragment
 import java.util.*
 
-private const val ARG_DATE = "daily_schedule_date"
+private const val DATE = "date"
 
-class ScheduleDatePickerFragment: DialogFragment() {
+class EditEventDatePickerFragment: DialogFragment() {
 
     interface Callbacks {
         fun onDateSelected(date: Date)
     }
 
-    private var callbacks: Callbacks? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
         val dateListener = DatePickerDialog.OnDateSetListener {
             _: DatePicker, year: Int, month: Int, day: Int ->
 
-            val resultDate: Date = GregorianCalendar(year, month, day).time
+            val resultDate: Date = GregorianCalendar(year,month,day).time
 
             targetFragment?.let { fragment ->
                 (fragment as Callbacks).onDateSelected(resultDate)
             }
         }
 
-        val date = arguments?.get(ARG_DATE) as Date
+        val date = arguments?.get(DATE) as Date
         val calendar = Calendar.getInstance()
         calendar.time = date
         val initialYear = calendar.get(Calendar.YEAR)
@@ -49,17 +42,12 @@ class ScheduleDatePickerFragment: DialogFragment() {
         )
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
-
     companion object {
-        fun newInstance(date: Date): ScheduleDatePickerFragment {
+        fun newInstance(date: Date): EditEventDatePickerFragment {
             val args = Bundle().apply {
-                putSerializable(ARG_DATE, date)
+                putSerializable(DATE, date)
             }
-            return ScheduleDatePickerFragment().apply {
+            return EditEventDatePickerFragment().apply {
                 arguments = args
             }
         }

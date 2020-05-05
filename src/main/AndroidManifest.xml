@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".CourseScheduleActivity" />
+        <activity android:name=".CourseScheduleFragment" />
         <activity android:name=".ScheduleActivity" />
     </application>
 

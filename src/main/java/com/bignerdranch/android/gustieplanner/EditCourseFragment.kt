@@ -48,12 +48,6 @@ class EditCourseFragment: Fragment() {
     private var course: Course? = null
     private var isNew = false
 
-    interface Callbacks {
-        fun created(boolean: Boolean)
-    }
-
-    private var callbacks: Callbacks? = null
-
     private val courseViewModel : EditCourseViewModel by lazy {
         ViewModelProviders.of(this).get(EditCourseViewModel::class.java)
     }
@@ -81,6 +75,11 @@ class EditCourseFragment: Fragment() {
         colorLookBtn = view.findViewById(R.id.course_color_look_button)
         submitBtn = view.findViewById(R.id.submit_course)
 
+        return view
+    }
+
+    override fun onStart() {
+        super.onStart()
         courseNameText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val text = s.toString()
@@ -202,8 +201,6 @@ class EditCourseFragment: Fragment() {
 
         courseViewModel.loadCourse(arguments?.getSerializable(COURSE_ID_TAG) as UUID)
         isNew = arguments?.getSerializable(IS_NEW_TAG) as Boolean
-
-        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -235,23 +232,11 @@ class EditCourseFragment: Fragment() {
             })
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callbacks  = context as Callbacks
-        callbacks?.created(true)
-    }
-
     override fun onStop() {
         super.onStop()
         if (!fieldsFilled() && isNew) {
             courseViewModel.deleteCourse(course!!.id)
         }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callbacks?.created(false)
-        callbacks = null
     }
 
     private fun onSubmit() {

@@ -57,4 +57,13 @@
     <string name="event_name">Event Name:</string>
     <string name="enter_event_name_here">Enter event name here</string>
     <string name="no_notifications_to_show">No notifications to show</string>
+    <string name="time">Time:</string>
+    <string name="edit_event_example_date">Tues 4/30/20</string>
+    <string name="edit_event_example_time">1:30 PM</string>
+    <string name="assignment">Assignment</string>
+    <string name="exam">Exam</string>
+    <string name="event">Event</string>
+    <string name="course">Course:</string>
+    <string name="description_optional">Description (optional)</string>
+    <string name="notifications">Notifications</string>
 </resources>

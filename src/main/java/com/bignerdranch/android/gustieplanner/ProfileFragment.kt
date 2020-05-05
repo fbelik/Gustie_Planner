@@ -5,29 +5,24 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import java.util.*
 
 private const val TAG = "ProfileActivity"
 
-class ProfileActivity: AppCompatActivity(), EditCourseFragment.Callbacks {
+class ProfileFragment: Fragment() {
 
     private lateinit var nameText: EditText
     private lateinit var setNameButton: Button
     private lateinit var newCourseButton: ImageButton
     private lateinit var backButton: Button
-    private lateinit var fragmentContainer: FrameLayout
-    private lateinit var notFragmentContainer: LinearLayout
     private lateinit var courseListContainer: LinearLayout
     private lateinit var noCoursesText: TextView
 
@@ -35,32 +30,47 @@ class ProfileActivity: AppCompatActivity(), EditCourseFragment.Callbacks {
         ViewModelProviders.of(this).get(ProfileViewModel::class.java)
     }
 
+    interface Callbacks {
+        fun onEditEventFragment(id: UUID, isNew: Boolean)
+    }
+
+    private var callbacks: Callbacks? = null
+
     private lateinit var sharedPreferences: SharedPreferences
-    private var usersName = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
-        nameText = findViewById(R.id.input_name_text)
-        setNameButton = findViewById(R.id.set_name_btn)
-        newCourseButton = findViewById(R.id.new_course_btn)
-        backButton = findViewById(R.id.profile_back_button)
-        fragmentContainer = findViewById(R.id.profile_fragment_container)
-        notFragmentContainer = findViewById(R.id.profile_not_fragment)
-        courseListContainer = findViewById(R.id.course_list_container)
-        noCoursesText = findViewById(R.id.no_courses_text)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks
+    }
 
-        sharedPreferences = getSharedPreferences(Keys.sharedPreferencesKey, Context.MODE_PRIVATE)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_profile, container, false)
+        nameText = view.findViewById(R.id.input_name_text)
+        setNameButton = view.findViewById(R.id.set_name_btn)
+        newCourseButton = view.findViewById(R.id.new_course_btn)
+        backButton = view.findViewById(R.id.profile_back_button)
+        courseListContainer = view.findViewById(R.id.course_list_container)
+        noCoursesText = view.findViewById(R.id.no_courses_text)
 
-        retrieveName()
-        nameText.setText(usersName)
+        return view
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        sharedPreferences = activity!!.getSharedPreferences(Keys.sharedPreferencesKey, Context.MODE_PRIVATE)
+        nameText.setText(sharedPreferences.getString(Keys.nameKey, "") ?: "")
 
         setNameButton.setOnClickListener {
             if (nameText.text.isNotEmpty()) {
                 saveName(nameText.text.toString())
             }
             else {
-                val alert = AlertDialog.Builder(this).apply {
+                val alert = AlertDialog.Builder(activity).apply {
                     setTitle("Error")
                     setMessage("Must enter a name")
                     setCancelable(false)
@@ -75,16 +85,11 @@ class ProfileActivity: AppCompatActivity(), EditCourseFragment.Callbacks {
         newCourseButton.setOnClickListener {
             val newCourse = Course()
             profileViewModel.addCourse(newCourse)
-            val fragment = EditCourseFragment.newInstance(newCourse.id, isNew = true)
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.profile_fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
+            callbacks?.onEditEventFragment(newCourse.id, true)
         }
 
         backButton.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            activity?.onBackPressed()
         }
 
         val coursesObserver = Observer<List<Course>> {courses ->
@@ -94,8 +99,9 @@ class ProfileActivity: AppCompatActivity(), EditCourseFragment.Callbacks {
         profileViewModel.coursesLiveData.observe(this, coursesObserver)
     }
 
-    override fun created(boolean: Boolean) {
-        notFragmentContainer.visibility = if (!boolean) View.VISIBLE else View.GONE
+    override fun onDestroy() {
+        super.onDestroy()
+        callbacks = null
     }
 
     private fun updateUI(courses: List<Course>) {
@@ -108,7 +114,7 @@ class ProfileActivity: AppCompatActivity(), EditCourseFragment.Callbacks {
         else {
             noCoursesText.visibility = View.INVISIBLE
             for (course in courses) {
-                val newView = LayoutInflater.from(this).inflate(R.layout.course_view, null)
+                val newView = LayoutInflater.from(activity).inflate(R.layout.course_view, null)
                 val titleText = newView.findViewById<TextView>(R.id.course_list_title)
                 val courseColor = newView.findViewById<View>(R.id.course_color_view)
                 val deleteButton = newView.findViewById<ImageButton>(R.id.course_list_delete)
@@ -119,21 +125,12 @@ class ProfileActivity: AppCompatActivity(), EditCourseFragment.Callbacks {
                 }
 
                 titleText.setOnClickListener {
-                    val fragment = EditCourseFragment.newInstance(course.id, isNew = false)
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.profile_fragment_container, fragment)
-                        .addToBackStack(null)
-                        .commit()
+                    callbacks?.onEditEventFragment(course.id, isNew = false)
                 }
 
                 courseListContainer.addView(newView)
             }
         }
-    }
-
-    private fun retrieveName() {
-        usersName = sharedPreferences.getString(Keys.nameKey, "") ?: ""
     }
 
     private fun saveName(newName: String) {
@@ -142,3 +139,4 @@ class ProfileActivity: AppCompatActivity(), EditCourseFragment.Callbacks {
         editor.apply()
     }
 }
+

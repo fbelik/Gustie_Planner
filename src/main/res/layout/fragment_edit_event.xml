@@ -48,23 +48,25 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             style="@style/BodyText"
-            android:text="Time:" />
+            android:text="@string/time" />
 
         <Button
+            android:id="@+id/edit_event_date_btn"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:background="@drawable/standard_button"
             android:textColor="?attr/buttonTextColor"
-            android:text="Tues 4/30/20" />
+            android:text="@string/edit_event_example_date" />
 
         <Button
+            android:id="@+id/edit_event_time_btn"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:background="@drawable/standard_button"
             android:textColor="?attr/buttonTextColor"
-            android:text="1:30 PM" />
+            android:text="@string/edit_event_example_time" />
 
 
     </LinearLayout>
@@ -83,19 +85,19 @@
             android:layout_weight="1"
             android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
-            android:text="Assignment" />
+            android:text="@string/assignment" />
 
         <RadioButton
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Test" />
+            android:text="@string/exam" />
 
         <RadioButton
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Event" />
+            android:text="@string/event" />
 
     </RadioGroup>
 
@@ -112,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             style="@style/BodyText"
-            android:text="Course:" />
+            android:text="@string/course" />
 
         <Spinner
             android:id="@+id/edit_event_course_spinner"
@@ -130,7 +132,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="15dp"
         android:lines="3"
-        android:hint="Description (optional)" />
+        android:hint="@string/description_optional" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -150,7 +152,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 style="@style/BodyText"
-                android:text="Notifications" />
+                android:text="@string/notifications" />
 
             <ImageButton
                 android:id="@+id/edit_event_new_notification"
