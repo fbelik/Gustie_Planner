@@ -7,6 +7,7 @@ class GustiePlannerApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         CourseRepository.initialize(this)
+        EventRepository.initialize(this)
     }
 
 }

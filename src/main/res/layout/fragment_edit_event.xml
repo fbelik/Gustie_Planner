@@ -81,6 +81,7 @@
         android:orientation="horizontal">
 
         <RadioButton
+            android:id="@+id/edit_event_assignment_radio"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_gravity="center_horizontal"
@@ -88,12 +89,14 @@
             android:text="@string/assignment" />
 
         <RadioButton
+            android:id="@+id/edit_event_exam_radio"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/exam" />
 
         <RadioButton
+            android:id="@+id/edit_event_event_radio"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"

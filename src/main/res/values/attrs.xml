@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ds">
+        <attr name="colorPrimary" format="color" />
+        <attr name="colorPrimaryDark" format="color" />
+        <attr name="colorAccent" format="color" />
         <attr name="backgroundColor" format="color" />
         <attr name="textColor" format="color" />
         <attr name="toggleButtonBackground" format="color" />

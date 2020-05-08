@@ -1,6 +1,5 @@
 package com.bignerdranch.android.gustieplanner
 
-import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.lang.StringBuilder
@@ -49,7 +48,7 @@ class Course(@PrimaryKey val id: UUID = UUID.randomUUID(),
 
     override fun toString(): String {
         val daysOfWeek = StringBuilder()
-        val initialString = " ("
+        val initialString = "("
         daysOfWeek.append(initialString)
         if (isOnM) {
             daysOfWeek.append('M')
@@ -66,12 +65,19 @@ class Course(@PrimaryKey val id: UUID = UUID.randomUUID(),
         if (isOnF) {
             daysOfWeek.append('F')
         }
-        if (daysOfWeek.length == initialString.length) {
-            daysOfWeek.clear()
+        var hour = startTime / 60
+        var minute = (((startTime / 60f) - hour) * 60).toInt()
+        var amPm = "am"
+        if (hour >= 12) {
+            amPm = "pm"
+            if (hour > 12) {
+                hour -= 12
+            }
         }
-        else {
-            daysOfWeek.append(')')
+        if (daysOfWeek.toString().length > 1) {
+            daysOfWeek.append(" ")
         }
-        return "$departmentCode-$numberCode $name$daysOfWeek"
+        daysOfWeek.append("%d:%02d$amPm)".format(hour, minute))
+        return "$departmentCode-$numberCode $name $daysOfWeek"
     }
 }

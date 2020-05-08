@@ -115,17 +115,21 @@ class ProfileFragment: Fragment() {
             noCoursesText.visibility = View.INVISIBLE
             for (course in courses) {
                 val newView = LayoutInflater.from(activity).inflate(R.layout.course_view, null)
+                val linearLayout = newView.findViewById<LinearLayout>(R.id.course_list_layout)
                 val titleText = newView.findViewById<TextView>(R.id.course_list_title)
-                val courseColor = newView.findViewById<View>(R.id.course_color_view)
                 val deleteButton = newView.findViewById<ImageButton>(R.id.course_list_delete)
+                linearLayout.background.setTint(course.color)
                 titleText.text = course.toString()
-                courseColor.setBackgroundColor(course.color)
                 deleteButton.setOnClickListener {
                     profileViewModel.deleteCourse(course.id)
                 }
 
-                titleText.setOnClickListener {
+                linearLayout.setOnClickListener {
                     callbacks?.onEditEventFragment(course.id, isNew = false)
+                }
+
+                newView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                    setMargins(0,0,0,10)
                 }
 
                 courseListContainer.addView(newView)

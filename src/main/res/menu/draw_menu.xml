@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single" >
+        <item android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_profile"
+            android:title="Profile" />
+        <item android:id="@+id/nav_weekly_schedule"
+            android:icon="@drawable/ic_weekly_schedule"
+            android:title="Class Schedule" />
+        <item android:id="@+id/nav_daily_schedule"
+            android:icon="@drawable/ic_daily_schedule"
+            android:title="Daily Schedule" />
+    </group>
+
+    <item android:title="Custom Title">
+        <menu>
+            <item android:id="@+id/add_1"
+                android:icon="@drawable/ic_profile"
+                android:title="Custom Title 1"/>
+            <item android:id="@+id/add_2"
+                android:icon="@drawable/ic_profile"
+                android:title="Custom Title 2"/>
+            <item android:id="@+id/add_3"
+                android:icon="@drawable/ic_profile"
+                android:title="Custom Title 3"/>
+        </menu>
+    </item>
+
+</menu>

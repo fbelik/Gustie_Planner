@@ -22,6 +22,7 @@ class CourseScheduleFragment: Fragment() {
 
     private val dayNames = arrayOf("mon", "tues", "wed", "thurs", "fri")
     private val courseOnDay = Array(5) {false}
+    private val eraseLayoutIds = mutableListOf<Int>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +53,11 @@ class CourseScheduleFragment: Fragment() {
     }
 
     private fun updateUI(courses: List<Course>) {
+        for (id in eraseLayoutIds) {
+            val view = getView()?.findViewById<LinearLayout>(id)
+            view?.removeAllViewsInLayout()
+        }
+        eraseLayoutIds.clear()
         for (course in courses) {
             courseOnDay[0] = course.isOnM
             courseOnDay[1] = course.isOnT
@@ -70,6 +76,7 @@ class CourseScheduleFragment: Fragment() {
                                     "id",
                                     activity?.packageName
                                 )
+                                eraseLayoutIds.add(viewId)
                                 val view = getView()?.findViewById<LinearLayout>(viewId)
 
                                 val text = TextView(activity)

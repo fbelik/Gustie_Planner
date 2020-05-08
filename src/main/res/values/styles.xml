@@ -1,17 +1,20 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme1" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme1" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">#ebb701</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#ebb701</item>
         <item name="backgroundColor">#ffffff</item>
         <item name="textColor">#000000</item>
         <item name="buttonTextColor">#000000</item>
-        <item name="toggleButtonBackground">#f5d742</item>
+        <item name="toggleButtonBackground">#ebb701</item>
         <item name="standardButtonColor">#3CFFFFFF</item>
-        <item name="highlight">#f5d742</item>
+        <item name="highlight">#ebb701</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="HeaderText" parent="TextAppearance.AppCompat">

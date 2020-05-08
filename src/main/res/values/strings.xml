@@ -66,4 +66,6 @@
     <string name="course">Course:</string>
     <string name="description_optional">Description (optional)</string>
     <string name="notifications">Notifications</string>
+    <string name="navigation_draw_open">Open navigation drawer</string>
+    <string name="navigation_draw_close">Close navigation drawer</string>
 </resources>
