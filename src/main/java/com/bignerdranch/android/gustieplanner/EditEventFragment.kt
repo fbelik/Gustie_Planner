@@ -1,6 +1,7 @@
 package com.bignerdranch.android.gustieplanner
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,7 +23,7 @@ private const val REQUEST_DATE = 1
 private const val REQUEST_TIME = 2
 private const val MAX_TITLE_LEN = 30
 
-class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, EditEventTimePickerFragment.Callbacks {
+class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, EditEventTimePickerFragment.Callbacks, EventNotificationDatePickerFragment.Callbacks, EventNotificationTimePickerFragment.Callbacks {
 
     private lateinit var eventName: EditText
     private lateinit var courseSpinner: Spinner
@@ -31,18 +32,17 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
     private lateinit var editTimeButton: Button
     private lateinit var eventTypeRadioGroup: RadioGroup
     private lateinit var newNotificationButton: ImageButton
+    private lateinit var notificationContainer: LinearLayout
+    private lateinit var noNotificationsText: TextView
     private lateinit var submitBtn: Button
 
-    private var event: Event? = null
-    private lateinit var editEventUUID: UUID
-    private var eventDate = Date()
-    private var allCourses: List<Course> = listOf()
     private var isNew = false
 
     interface Callbacks {
-        fun isCreated(bool: Boolean)
-
+        fun createNotifications(title: String, description: String, dates: List<Date>, notificationIds: List<Int>)
     }
+
+    private var callbacks: Callbacks? = null
 
     private val editEventViewModel: EditEventViewModel by lazy {
         ViewModelProviders.of(this).get(EditEventViewModel::class.java)
@@ -62,11 +62,18 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
         editTimeButton = view.findViewById(R.id.edit_event_time_btn)
         eventTypeRadioGroup = view.findViewById(R.id.edit_event_type_radio_group)
         newNotificationButton = view.findViewById(R.id.edit_event_new_notification)
+        notificationContainer = view.findViewById(R.id.edit_event_notification_list_container)
+        noNotificationsText = view.findViewById(R.id.edit_event_no_notifications_text)
         submitBtn = view.findViewById(R.id.edit_event_submit)
 
-        editEventUUID = arguments?.getSerializable(EVENT_ID_KEY) as UUID
+        editEventViewModel.editEventUUID = arguments?.getSerializable(EVENT_ID_KEY) as UUID
 
         return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks
     }
 
     override fun onStart() {
@@ -89,7 +96,7 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
 
         editDateButton.setOnClickListener {
             activity?.let {
-                EditEventDatePickerFragment.newInstance(eventDate).apply {
+                EditEventDatePickerFragment.newInstance(editEventViewModel.eventDate).apply {
                     setTargetFragment(this@EditEventFragment, REQUEST_DATE)
                     show(it.supportFragmentManager, "get_date")
                 }
@@ -98,7 +105,7 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
 
         editTimeButton.setOnClickListener {
             activity?.let {
-                EditEventTimePickerFragment.newInstance(eventDate).apply {
+                EditEventTimePickerFragment.newInstance(editEventViewModel.eventDate).apply {
                     setTargetFragment(this@EditEventFragment, REQUEST_TIME)
                     show(it.supportFragmentManager, "get_time")
                 }
@@ -106,7 +113,11 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
         }
 
         newNotificationButton.setOnClickListener {
-            //TODO add a new notification here
+            val newIdx = editEventViewModel.eventNotifications.size
+            if (newIdx < 5) {
+                editEventViewModel.eventNotifications.add(editEventViewModel.eventDate)
+                updateUINotifications()
+            }
         }
 
         submitBtn.setOnClickListener {
@@ -119,7 +130,7 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
         val eventId = arguments?.getSerializable(EVENT_ID_KEY) as UUID
 
         editEventViewModel.coursesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { courses ->
-            allCourses = courses
+            editEventViewModel.allCourses = courses
             updateUICourseList()
         })
         editEventViewModel.loadEvent(eventId)
@@ -133,8 +144,8 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
                 Log.d("EditEventFragment", "Incoming event ${incomingEvent}")
                 incomingEvent?.let {
                     Log.d("EditEventFragment", "Received event, setting values")
-                    event = it
-                    eventDate = it.time
+                    editEventViewModel.event = it
+                    editEventViewModel.eventDate = it.time
                     eventName.setText(it.name)
                     eventDescription.setText(it.description)
                     editDateButton.text = SimpleDateFormat(date_format_string).format(it.time)
@@ -146,31 +157,35 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
                             else -> R.id.edit_event_assignment_radio
                         }
                     )
+                    eventTypeRadioGroup.jumpDrawablesToCurrentState()
                     courseSpinner.adapter?.apply {
                         var spinnerIdx = 0
-                        for (cIdx in allCourses.indices) {
-                            if (it.courseId == allCourses[cIdx].id) {
+                        for (cIdx in editEventViewModel.allCourses.indices) {
+                            if (it.courseId == editEventViewModel.allCourses[cIdx].id) {
                                 spinnerIdx = cIdx + 1
                                 break
                             }
                         }
                         courseSpinner.setSelection(spinnerIdx)
                     }
-                    if (it.notification1_time != null) {
-                        //TODO add notifications
+                    courseSpinner.jumpDrawablesToCurrentState()
+                    editEventViewModel.eventNotifications.clear()
+                    if (it.notification1_time.time != 0L) {
+                        editEventViewModel.eventNotifications.add(it.notification1_time)
+                        if (it.notification2_time.time != 0L) {
+                            editEventViewModel.eventNotifications.add(it.notification2_time)
+                            if (it.notification3_time.time != 0L) {
+                                editEventViewModel.eventNotifications.add(it.notification3_time)
+                                if (it.notification4_time.time != 0L) {
+                                    editEventViewModel.eventNotifications.add(it.notification4_time)
+                                    if (it.notification5_time.time != 0L) {
+                                        editEventViewModel.eventNotifications.add(it.notification5_time)
+                                    }
+                                }
+                            }
+                        }
                     }
-                    if (it.notification2_time != null) {
-                        //TODO
-                    }
-                    if (it.notification3_time != null) {
-                        //TODO
-                    }
-                    if (it.notification4_time != null) {
-                        //TODO
-                    }
-                    if (it.notification5_time != null) {
-                        //TODO
-                    }
+                    updateUINotifications()
                 }
             }
         )
@@ -179,8 +194,13 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
     override fun onStop() {
         super.onStop()
         if (!fieldsFilled() && isNew) {
-            editEventViewModel.deleteEvent(editEventUUID)
+            editEventViewModel.deleteEvent(editEventViewModel.editEventUUID)
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     private fun onSubmit() {
@@ -195,9 +215,20 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
             }
         }
         else {
-            event?.let {
+            val numNotifications = editEventViewModel.eventNotifications.size
+            for (i in numNotifications until 5) {
+                editEventViewModel.eventNotifications.add(Date(0L))
+            }
+
+            editEventViewModel.event?.notification1_time = editEventViewModel.eventNotifications[0]
+            editEventViewModel.event?.notification2_time = editEventViewModel.eventNotifications[1]
+            editEventViewModel.event?.notification3_time = editEventViewModel.eventNotifications[2]
+            editEventViewModel.event?.notification4_time = editEventViewModel.eventNotifications[3]
+            editEventViewModel.event?.notification5_time = editEventViewModel.eventNotifications[4]
+
+            editEventViewModel.event?.let {
                 it.name = eventName.text.toString()
-                it.time = eventDate
+                it.time = editEventViewModel.eventDate
                 it.description = eventDescription.text.toString()
                 it.type = when (eventTypeRadioGroup.checkedRadioButtonId) {
                     R.id.edit_event_exam_radio -> "Exam"
@@ -208,8 +239,15 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
                     it.courseId = UUID.randomUUID()
                 }
                 else {
-                    it.courseId = allCourses.get(courseSpinner.selectedItemPosition - 1).id
+                    it.courseId = editEventViewModel.allCourses.get(courseSpinner.selectedItemPosition - 1).id
                 }
+
+                val eventIds = List<Int>(5) { i -> it.id.leastSignificantBits.toInt() + i }
+                val notificationTitle = "${it.type} - ${it.name}"
+                callbacks?.createNotifications(notificationTitle, it.description, editEventViewModel.eventNotifications, eventIds)
+            }
+
+            editEventViewModel.event?.let {
                 editEventViewModel.updateEvent(it)
             }
 
@@ -218,13 +256,13 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
     }
 
     private fun updateUICourseList() {
-        val spinnerVals = MutableList<String>(allCourses.size) {i -> allCourses[i].name}
+        val spinnerVals = MutableList<String>(editEventViewModel.allCourses.size) {i -> editEventViewModel.allCourses[i].name}
         spinnerVals.add(0, "None")
         val adapter = activity?.let { ArrayAdapter(it, android.R.layout.simple_spinner_dropdown_item, spinnerVals) }
         courseSpinner.adapter = adapter
         var spinnerIdx = 0
-        for (cIdx in allCourses.indices) {
-            if (event?.courseId == allCourses[cIdx].id) {
+        for (cIdx in editEventViewModel.allCourses.indices) {
+            if (editEventViewModel.event?.courseId == editEventViewModel.allCourses[cIdx].id) {
                 spinnerIdx = cIdx + 1
                 break
             }
@@ -232,18 +270,106 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
         courseSpinner.setSelection(spinnerIdx)
     }
 
-    override fun onDateSelected(date: Date) {
-        eventDate = date
-        editDateButton.text = SimpleDateFormat(date_format_string).format(date)
+    private fun updateUINotifications() {
+        notificationContainer.removeAllViewsInLayout()
+        if (editEventViewModel.eventNotifications.size == 0) {
+            noNotificationsText.visibility = View.VISIBLE
+        }
+        else {
+            noNotificationsText.visibility = View.GONE
+        }
+        for (idx in 0 until 5) {
+            if (idx < editEventViewModel.eventNotifications.size && editEventViewModel.eventNotifications[idx].time != 0L) {
+                val notificationDate = editEventViewModel.eventNotifications[idx]
+                val newView = LayoutInflater.from(activity).inflate(R.layout.event_notification_view, null)
+                val timeBtn = newView.findViewById<Button>(R.id.notification_view_time)
+                val dateBtn = newView.findViewById<Button>(R.id.notification_view_date)
+                val deleteBtn = newView.findViewById<ImageButton>(R.id.notification_view_delete)
+
+                timeBtn.text = SimpleDateFormat(time_format_string).format(notificationDate)
+                dateBtn.text = SimpleDateFormat(date_format_string).format(notificationDate)
+
+                timeBtn.setOnClickListener {
+                    activity?.let {
+                        EventNotificationTimePickerFragment.newInstance(notificationDate, idx).apply {
+                            setTargetFragment(this@EditEventFragment, REQUEST_DATE)
+                            show(it.supportFragmentManager, "get_date")
+                        }
+                    }
+                }
+                dateBtn.setOnClickListener {
+                    activity?.let {
+                        EventNotificationDatePickerFragment.newInstance(notificationDate, idx).apply {
+                            setTargetFragment(this@EditEventFragment, REQUEST_DATE)
+                            show(it.supportFragmentManager, "get_date")
+                        }
+                    }
+                }
+                deleteBtn.setOnClickListener {
+                    editEventViewModel.eventNotifications.removeAt(idx)
+                    updateUINotifications()
+                }
+
+                notificationContainer.addView(newView)
+            }
+            else {
+                break
+            }
+        }
     }
 
-    override fun onTimeSelected(hour: Int, minute: Int) {
+    override fun onEventDateSelected(date: Date) {
         val calendar = Calendar.getInstance()
-        calendar.time = eventDate
-        calendar.set(Calendar.HOUR, hour)
-        calendar.set(Calendar.MINUTE, minute)
-        eventDate = calendar.time
-        editTimeButton.text = SimpleDateFormat(time_format_string).format(eventDate)
+        calendar.time = editEventViewModel.eventDate
+        val oldHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val oldMin = calendar.get(Calendar.MINUTE)
+        calendar.time = date
+        calendar.set(Calendar.HOUR_OF_DAY, oldHour)
+        calendar.set(Calendar.MINUTE, oldMin)
+        calendar.set(Calendar.SECOND, 0)
+        editEventViewModel.eventDate = calendar.time
+        editDateButton.text = SimpleDateFormat(date_format_string).format(calendar.time)
+    }
+
+    override fun onEventTimeSelected(hour: Int, minute: Int) {
+        val calendar = Calendar.getInstance().apply {
+            this.time = editEventViewModel.eventDate
+            this.set(Calendar.HOUR_OF_DAY, hour)
+            this.set(Calendar.MINUTE, minute)
+            this.set(Calendar.SECOND, 0)
+        }
+        editEventViewModel.eventDate = calendar.time
+        editTimeButton.text = SimpleDateFormat(time_format_string).format(editEventViewModel.eventDate)
+    }
+
+    override fun onNotificationDateSelected(date: Date, notificationIdx: Int) {
+        val calendar = Calendar.getInstance().apply {
+            time = editEventViewModel.eventNotifications[notificationIdx]
+            val oldHour = this.get(Calendar.HOUR_OF_DAY)
+            val oldMin = this.get(Calendar.MINUTE)
+            time = date
+            this.set(Calendar.HOUR_OF_DAY, oldHour)
+            this.set(Calendar.MINUTE, oldMin)
+            this.set(Calendar.SECOND, 0)
+        }
+
+        editEventViewModel.eventNotifications[notificationIdx] = calendar.time
+        val view = notificationContainer.getChildAt(notificationIdx)
+        val dateBtn = view.findViewById<Button>(R.id.notification_view_date)
+        dateBtn.text = SimpleDateFormat(date_format_string).format(calendar.time)
+    }
+
+    override fun onNotificationTimeSelected(hour: Int, minute: Int, notificationIdx: Int) {
+        val cal = Calendar.getInstance().apply {
+            time = editEventViewModel.eventNotifications[notificationIdx]
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+        }
+        editEventViewModel.eventNotifications[notificationIdx] = cal.time
+        val view = notificationContainer.getChildAt(notificationIdx)
+        val timeBtn = view.findViewById<Button>(R.id.notification_view_time)
+        timeBtn.text = SimpleDateFormat(time_format_string).format(cal.time)
     }
 
     private fun fieldsFilled(): Boolean {

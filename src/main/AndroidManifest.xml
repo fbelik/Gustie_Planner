@@ -5,9 +5,9 @@
     <application
         android:name=".GustiePlannerApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme1">
         <activity android:name=".MainActivity">
@@ -17,9 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".CourseScheduleFragment" />
-        <activity android:name=".ScheduleActivity" />
+        <receiver android:name=".NotificationBroadcast" />
     </application>
 
 </manifest>

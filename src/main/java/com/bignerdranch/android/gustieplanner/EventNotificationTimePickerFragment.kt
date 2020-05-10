@@ -8,19 +8,23 @@ import androidx.fragment.app.DialogFragment
 import java.util.*
 
 private const val DATE = "date"
+private const val NOTIFICATION_IDX = "notification_idx"
 
-class EditEventTimePickerFragment: DialogFragment() {
+class EventNotificationTimePickerFragment: DialogFragment() {
 
     interface Callbacks {
-        fun onEventTimeSelected(hour: Int, minute: Int)
+        fun onNotificationTimeSelected(hour: Int, minute: Int, notificationIdx: Int)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        val notificationIdx = arguments?.get(NOTIFICATION_IDX) as Int
+
         val timeListener = TimePickerDialog.OnTimeSetListener {
                 _: TimePicker, hour: Int, minute: Int ->
 
             targetFragment?.let { fragment ->
-                (fragment as Callbacks).onEventTimeSelected(hour, minute)
+                (fragment as Callbacks).onNotificationTimeSelected(hour, minute, notificationIdx)
             }
         }
 
@@ -40,11 +44,12 @@ class EditEventTimePickerFragment: DialogFragment() {
     }
 
     companion object {
-        fun newInstance(date: Date): EditEventTimePickerFragment {
+        fun newInstance(date: Date, notificationIdx: Int): EventNotificationTimePickerFragment {
             val args = Bundle().apply {
                 putSerializable(DATE, date)
+                putSerializable(NOTIFICATION_IDX, notificationIdx)
             }
-            return EditEventTimePickerFragment().apply {
+            return EventNotificationTimePickerFragment().apply {
                 arguments = args
             }
         }

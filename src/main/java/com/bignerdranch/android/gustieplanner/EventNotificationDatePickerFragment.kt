@@ -8,21 +8,25 @@ import androidx.fragment.app.DialogFragment
 import java.util.*
 
 private const val DATE = "date"
+private const val NOTIFICATION_IDX = "notification_idx"
 
-class EditEventDatePickerFragment: DialogFragment() {
+class EventNotificationDatePickerFragment: DialogFragment() {
 
     interface Callbacks {
-        fun onEventDateSelected(date: Date)
+        fun onNotificationDateSelected(date: Date, notificationIdx: Int)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        val notificationIdx = arguments?.get(NOTIFICATION_IDX) as Int
+
         val dateListener = DatePickerDialog.OnDateSetListener {
-            _: DatePicker, year: Int, month: Int, day: Int ->
+                _: DatePicker, year: Int, month: Int, day: Int ->
 
             val resultDate: Date = GregorianCalendar(year,month,day).time
 
             targetFragment?.let { fragment ->
-                (fragment as Callbacks).onEventDateSelected(resultDate)
+                (fragment as Callbacks).onNotificationDateSelected(resultDate, notificationIdx)
             }
         }
 
@@ -43,13 +47,15 @@ class EditEventDatePickerFragment: DialogFragment() {
     }
 
     companion object {
-        fun newInstance(date: Date): EditEventDatePickerFragment {
+        fun newInstance(date: Date, notificationIdx: Int): EventNotificationDatePickerFragment {
             val args = Bundle().apply {
                 putSerializable(DATE, date)
+                putSerializable(NOTIFICATION_IDX, notificationIdx)
             }
-            return EditEventDatePickerFragment().apply {
+            return EventNotificationDatePickerFragment().apply {
                 arguments = args
             }
         }
     }
+
 }

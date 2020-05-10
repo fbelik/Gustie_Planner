@@ -8,6 +8,12 @@ import java.util.*
 
 class EditEventViewModel: ViewModel() {
 
+    var event: Event? = null
+    lateinit var editEventUUID: UUID
+    var eventDate = Date()
+    var allCourses: List<Course> = listOf()
+    val eventNotifications = mutableListOf<Date>()
+
     private val eventRepository = EventRepository.get()
     private val eventIdLiveData = MutableLiveData<UUID>()
 
