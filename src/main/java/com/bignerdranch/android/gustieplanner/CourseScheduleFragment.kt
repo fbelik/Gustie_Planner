@@ -1,13 +1,18 @@
 package com.bignerdranch.android.gustieplanner
 
 import android.content.Context
+import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -54,7 +59,7 @@ class CourseScheduleFragment: Fragment() {
 
     private fun updateUI(courses: List<Course>) {
         for (id in eraseLayoutIds) {
-            val view = getView()?.findViewById<LinearLayout>(id)
+            val view = view?.findViewById<LinearLayout>(id)
             view?.removeAllViewsInLayout()
         }
         eraseLayoutIds.clear()
@@ -70,7 +75,9 @@ class CourseScheduleFragment: Fragment() {
                     if (courseOnDay[day]) {
                         for (time in 1 until roundUp(course.courseTime)) {
                             timeString = startTimeConverter(course.startTime + (time - 1) * 60)
-                            if (timeString != "error") {
+                            val timeStringForward = startTimeConverter(course.startTime + (time) * 60)
+                            val chapelRepeat = (time != roundUp(course.courseTime)-1) && (timeString != timeStringForward) && (timeString == "10am")
+                            if (timeString != "error" && !chapelRepeat) {
                                 val viewId = resources.getIdentifier(
                                     "${dayNames[day]}_$timeString",
                                     "id",
@@ -81,7 +88,9 @@ class CourseScheduleFragment: Fragment() {
 
                                 val text = TextView(activity)
                                 text.text = course.name
-                                text.setTextColor(resources.getColor(R.color.black))
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    text.setTextColor(resources.getColor(R.color.black, null))
+                                }
                                 text.textSize = 10f
 
                                 val layoutParams = LinearLayout.LayoutParams(

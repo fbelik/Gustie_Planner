@@ -8,38 +8,72 @@
         <item name="colorAccent">#ebb701</item>
         <item name="backgroundColor">#ffffff</item>
         <item name="textColor">#000000</item>
+        <item name="hintColor">#808080</item>
         <item name="buttonTextColor">#000000</item>
         <item name="toggleButtonBackground">#ebb701</item>
         <item name="standardButtonColor">#3CFFFFFF</item>
         <item name="highlight">#ebb701</item>
+        <item name="navIconColors">#000000</item>
+        <item name="borderColor">#000000</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:textColorSecondary">#B2000000</item>
+    </style>
+
+    <!-- Dark application theme. -->
+    <style name="AppTheme2" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#ebb701</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#ebb701</item>
+        <item name="backgroundColor">#121212</item>
+        <item name="textColor">#FFFFFF</item>
+        <item name="hintColor">#C8C8C8</item>
+        <item name="buttonTextColor">#000000</item>
+        <item name="toggleButtonBackground">#ebb701</item>
+        <item name="standardButtonColor">#ebb701</item>
+        <item name="highlight">#ebb701</item>
+        <item name="navIconColors">#ebb701</item>
+        <item name="borderColor">#ebb701</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:textColorSecondary">#C6FFFFFF</item>
+    </style>
+
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
     <style name="HeaderText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">?attr/textColor</item>
         <item name="android:textSize">24sp</item>
     </style>
 
     <style name="BodyText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">?attr/textColor</item>
         <item name="android:textSize">18sp</item>
     </style>
 
     <style name="MediumBodyText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">?attr/textColor</item>
         <item name="android:textSize">15sp</item>
     </style>
 
     <style name="SmallBodyText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">?attr/textColor</item>
         <item name="android:textSize">11sp</item>
     </style>
 
     <style name="EditTextBox" parent="Widget.AppCompat.EditText" >
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">?attr/textColor</item>
         <item name="android:textSize">18sp</item>
+        <item name="android:backgroundTint">?attr/colorAccent</item>
+        <item name="android:textColorHint">?attr/hintColor</item>
     </style>
 
 

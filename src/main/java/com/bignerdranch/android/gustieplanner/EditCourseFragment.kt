@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -155,9 +156,10 @@ class EditCourseFragment: Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 val txt = s.toString()
                 val value = txt.toFloatOrNull() ?: 0f
-//                if (value - value.toInt().toFloat() != 0.5f) {
-//                    courseLength.setText(value.toInt().toFloat().toString())
-//                }
+                if (value > 24f) {
+                    courseLength.setText("24.0")
+                    Toast.makeText(context, "Course cannot be longer than 24 hours", Toast.LENGTH_LONG).show()
+                }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -166,22 +168,22 @@ class EditCourseFragment: Fragment() {
         })
 
         colorSelectBtn.setOnClickListener {
-            val builder = ColorPickerDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_DARK).apply {
+            ColorPickerDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_DARK).apply {
                 setTitle("Course color picker")
                 setPositiveButton("Ok", ColorListener { color, fromUser ->
                     Log.d("Color", "Setting color button to $color")
                     courseColor = color
                     colorLookBtn.setBackgroundColor(color)
                 })
-                setNegativeButton("Cancel", DialogInterface.OnClickListener() { dialog: DialogInterface?, which: Int ->
+                setNegativeButton("Cancel") { dialog: DialogInterface?, which: Int ->
                     dialog?.dismiss()
-                })
+                }
                 show()
             }
         }
 
         colorLookBtn.setOnClickListener {
-            val builder = ColorPickerDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_DARK).apply {
+            ColorPickerDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_DARK).apply {
                 setTitle("Course color picker")
                 setPositiveButton("Ok", ColorListener { color, fromUser ->
                     Log.d("Color", "Setting color button to $color")
@@ -241,7 +243,7 @@ class EditCourseFragment: Fragment() {
 
     private fun onSubmit() {
         if (!fieldsFilled()) {
-            val alert = AlertDialog.Builder(context).apply {
+            AlertDialog.Builder(context).apply {
                 setTitle("Error")
                 setMessage("One of the fields was not filled")
                 setCancelable(false)
@@ -255,7 +257,7 @@ class EditCourseFragment: Fragment() {
         try {
             var startTime = hrMinToInt(startHour.text.toString().toInt(), startMinute.text.toString().toInt(), startAmPm.isChecked)
             if (startTime < 0 || startTime >= 24*60) {
-                val alert = AlertDialog.Builder(context).apply {
+                AlertDialog.Builder(context).apply {
                     setTitle("Error")
                     setMessage("Start time entered incorrectly.")
                     setCancelable(false)
@@ -268,7 +270,7 @@ class EditCourseFragment: Fragment() {
             }
             val length = courseLength.text.toString().toFloatOrNull()
             if (length == null || length < 0) {
-                val alert = AlertDialog.Builder(context).apply {
+                AlertDialog.Builder(context).apply {
                     setTitle("Error")
                     setMessage("Course length entered incorrectly.")
                     setCancelable(false)
@@ -298,7 +300,7 @@ class EditCourseFragment: Fragment() {
             activity?.onBackPressed()
         }
         catch (e: NumberFormatException) {
-            val alert = AlertDialog.Builder(context).apply {
+            AlertDialog.Builder(context).apply {
                 setTitle("Error")
                 setMessage("One of the fields was not entered properly")
                 setCancelable(false)

@@ -2,46 +2,76 @@ package com.bignerdranch.android.gustieplanner
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
+import android.widget.CompoundButton
 import android.widget.FrameLayout
+import android.widget.Switch
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.children
+import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
+import java.lang.Exception
 import java.util.*
 
 private const val TAG = "MainActivity"
+private const val IS_DARK = "is-dark"
 
-class MainActivity : AppCompatActivity(), ProfileFragment.Callbacks, DailyScheduleFragment.Callbacks, EditEventFragment.Callbacks {
+class MainActivity : AppCompatActivity(), HomeFragment.Callbacks, ProfileFragment.Callbacks, DailyScheduleFragment.Callbacks, EditEventFragment.Callbacks {
 
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var fragmentHolder: FrameLayout
     private lateinit var drawer: DrawerLayout
+    private lateinit var navigationView: NavigationView
+
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        sharedPreferences = getSharedPreferences(Keys.sharedPreferencesKey, Context.MODE_PRIVATE)
+        val isDark = sharedPreferences.getBoolean(IS_DARK, false)
+
+        if (isDark) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            setTheme(R.style.AppTheme2)
+        }
+        else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            setTheme(R.style.AppTheme1)
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         notificationManager = NotificationManagerCompat.from(this)
 
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         drawer = findViewById(R.id.drawer_layout)
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_profile -> {
                     Log.d(TAG, "Starting activity Profile Activity")
+                    for (i in 0 until supportFragmentManager.backStackEntryCount) {
+                        supportFragmentManager.popBackStack()
+                    }
                     val fragment = ProfileFragment()
                     supportFragmentManager
                         .beginTransaction()
@@ -53,6 +83,9 @@ class MainActivity : AppCompatActivity(), ProfileFragment.Callbacks, DailySchedu
                 }
                 R.id.nav_weekly_schedule -> {
                     Log.d(TAG, "Starting activity Course Schedule")
+                    for (i in 0 until supportFragmentManager.backStackEntryCount) {
+                        supportFragmentManager.popBackStack()
+                    }
                     val fragment = CourseScheduleFragment()
                     supportFragmentManager
                         .beginTransaction()
@@ -64,6 +97,9 @@ class MainActivity : AppCompatActivity(), ProfileFragment.Callbacks, DailySchedu
                 }
                 R.id.nav_daily_schedule -> {
                     Log.d(TAG, "Starting activity Daily Schedule")
+                    for (i in 0 until supportFragmentManager.backStackEntryCount) {
+                        supportFragmentManager.popBackStack()
+                    }
                     val fragment = DailyScheduleFragment()
                     supportFragmentManager
                         .beginTransaction()
@@ -71,6 +107,43 @@ class MainActivity : AppCompatActivity(), ProfileFragment.Callbacks, DailySchedu
                         .addToBackStack(null)
                         .commit()
                     drawer.closeDrawer(GravityCompat.START)
+                    true
+                }
+                R.id.nav_email_contact -> {
+                    Log.d(TAG, "Starting email contact")
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        data = Uri.parse("mailto:")
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_EMAIL, "fbelik@gustavus.edu")
+                        putExtra(Intent.EXTRA_SUBJECT, "Gustie Planner Android App")
+                    }
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_gustavus_webpage -> {
+                    Log.d(TAG, "Starting gustavus webpage")
+                    try {
+                        val intent = Intent(Intent.ACTION_WEB_SEARCH).apply {
+                            putExtra(SearchManager.QUERY, "https://www.gustavus.edu/")
+                        }
+                        startActivity(intent)
+                    }
+                    catch (e: Exception) {
+                        Toast.makeText(this, "Could not access web, error $e", Toast.LENGTH_LONG).show()
+                    }
+                    true
+                }
+                R.id.nav_moodle_webpage -> {
+                    Log.d(TAG, "Starting moodle webpage")
+                    try {
+                        val intent = Intent(Intent.ACTION_WEB_SEARCH).apply {
+                            putExtra(SearchManager.QUERY, "https://moodle.gac.edu/")
+                        }
+                        startActivity(intent)
+                    }
+                    catch (e: Exception) {
+                        Toast.makeText(this, "Could not access web, error $e", Toast.LENGTH_LONG).show()
+                    }
                     true
                 }
                 else -> false
@@ -92,7 +165,21 @@ class MainActivity : AppCompatActivity(), ProfileFragment.Callbacks, DailySchedu
         }
     }
 
-    override fun onEditEventFragment(id: UUID, isNew: Boolean) {
+    override fun onSwitchTheme(toDark: Boolean) {
+        val editor = sharedPreferences.edit()
+        if (toDark) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            editor.putBoolean(IS_DARK, true)
+        }
+        else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            editor.putBoolean(IS_DARK, false)
+        }
+        editor.apply()
+        restartApp()
+    }
+
+    override fun onEditCourse(id: UUID, isNew: Boolean) {
         val fragment = EditCourseFragment.newInstance(id, isNew)
         supportFragmentManager
             .beginTransaction()
@@ -116,6 +203,11 @@ class MainActivity : AppCompatActivity(), ProfileFragment.Callbacks, DailySchedu
         }
         else {
             super.onBackPressed()
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                for (item in navigationView.menu.children) {
+                    item.isChecked = (false)
+                }
+            }
         }
     }
 
@@ -153,4 +245,10 @@ class MainActivity : AppCompatActivity(), ProfileFragment.Callbacks, DailySchedu
             }
         }
     }
+
+    private fun restartApp() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
 }

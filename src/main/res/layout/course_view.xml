@@ -17,10 +17,12 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         style="@style/MediumBodyText"
+        android:textColor="@color/black"
         tools:text="Course title" />
 
     <ImageButton
         android:id="@+id/course_list_delete"
+        android:background="@drawable/circle_button"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_gravity="center"

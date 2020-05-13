@@ -2,7 +2,6 @@ package com.bignerdranch.android.gustieplanner
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import java.util.*
 
 private const val TAG = "ProfileActivity"
+private const val MAX_NAME_LENGTH = 15
 
 class ProfileFragment: Fragment() {
 
@@ -31,7 +31,7 @@ class ProfileFragment: Fragment() {
     }
 
     interface Callbacks {
-        fun onEditEventFragment(id: UUID, isNew: Boolean)
+        fun onEditCourse(id: UUID, isNew: Boolean)
     }
 
     private var callbacks: Callbacks? = null
@@ -63,14 +63,23 @@ class ProfileFragment: Fragment() {
     override fun onStart() {
         super.onStart()
         sharedPreferences = activity!!.getSharedPreferences(Keys.sharedPreferencesKey, Context.MODE_PRIVATE)
-        nameText.setText(sharedPreferences.getString(Keys.nameKey, "") ?: "")
+        var usersName = sharedPreferences.getString(Keys.nameKey, "") ?: ""
+        if (usersName.length > MAX_NAME_LENGTH) {
+            usersName = usersName.slice(0 until MAX_NAME_LENGTH)
+        }
+        nameText.setText(usersName)
 
         setNameButton.setOnClickListener {
-            if (nameText.text.isNotEmpty()) {
+            val name = nameText.text
+            if (name.length > MAX_NAME_LENGTH) {
+                Toast.makeText(context, "Exceeds maximum name length $MAX_NAME_LENGTH", Toast.LENGTH_LONG).show()
+            }
+            else if (name.isNotEmpty()) {
                 saveName(nameText.text.toString())
+                Toast.makeText(context, "Name saved", Toast.LENGTH_LONG).show()
             }
             else {
-                val alert = AlertDialog.Builder(activity).apply {
+                AlertDialog.Builder(activity).apply {
                     setTitle("Error")
                     setMessage("Must enter a name")
                     setCancelable(false)
@@ -85,7 +94,7 @@ class ProfileFragment: Fragment() {
         newCourseButton.setOnClickListener {
             val newCourse = Course()
             profileViewModel.addCourse(newCourse)
-            callbacks?.onEditEventFragment(newCourse.id, true)
+            callbacks?.onEditCourse(newCourse.id, true)
         }
 
         backButton.setOnClickListener {
@@ -107,7 +116,6 @@ class ProfileFragment: Fragment() {
     private fun updateUI(courses: List<Course>) {
         Log.d(TAG, "Updating UI, total of ${courses.size} courses")
         courseListContainer.removeAllViews()
-        val courses = courses
         if (courses.isEmpty()) {
             noCoursesText.visibility = View.VISIBLE
         }
@@ -125,7 +133,7 @@ class ProfileFragment: Fragment() {
                 }
 
                 linearLayout.setOnClickListener {
-                    callbacks?.onEditEventFragment(course.id, isNew = false)
+                    callbacks?.onEditCourse(course.id, isNew = false)
                 }
 
                 newView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {

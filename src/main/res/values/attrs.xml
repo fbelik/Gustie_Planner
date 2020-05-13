@@ -6,9 +6,12 @@
         <attr name="colorAccent" format="color" />
         <attr name="backgroundColor" format="color" />
         <attr name="textColor" format="color" />
+        <attr name="hintColor" format="color" />
         <attr name="toggleButtonBackground" format="color" />
         <attr name="standardButtonColor" format="color" />
         <attr name="buttonTextColor" format="color" />
         <attr name="highlight" format="color" />
+        <attr name="navIconColors" format="color" />
+        <attr name="borderColor" format="color" />
     </declare-styleable>
 </resources>

@@ -21,7 +21,8 @@ private const val date_format_string = "E LLL dd yy"
 private const val time_format_string = "h:mm a"
 private const val REQUEST_DATE = 1
 private const val REQUEST_TIME = 2
-private const val MAX_TITLE_LEN = 30
+private const val MAX_TITLE_LEN = 25
+private const val MAX_DESCRIPTION_LEN = 110
 
 class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, EditEventTimePickerFragment.Callbacks, EventNotificationDatePickerFragment.Callbacks, EventNotificationTimePickerFragment.Callbacks {
 
@@ -84,6 +85,21 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
                 val text = s.toString()
                 if (text.length > MAX_TITLE_LEN) {
                     eventName.setText(text.slice(0 until MAX_TITLE_LEN))
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+
+        eventDescription.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val text = s.toString()
+                if (text.length > MAX_DESCRIPTION_LEN) {
+                    eventDescription.setText(text.slice(0 until MAX_DESCRIPTION_LEN))
                 }
             }
 
@@ -205,7 +221,7 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
 
     private fun onSubmit() {
         if (!fieldsFilled()) {
-            val alert = AlertDialog.Builder(context).apply {
+            AlertDialog.Builder(context).apply {
                 setTitle("Error")
                 setMessage("One of the fields was not filled")
                 setCancelable(false)
@@ -258,7 +274,7 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
     private fun updateUICourseList() {
         val spinnerVals = MutableList<String>(editEventViewModel.allCourses.size) {i -> editEventViewModel.allCourses[i].name}
         spinnerVals.add(0, "None")
-        val adapter = activity?.let { ArrayAdapter(it, android.R.layout.simple_spinner_dropdown_item, spinnerVals) }
+        val adapter = activity?.let { ArrayAdapter(it, R.layout.spinner_item, spinnerVals) }
         courseSpinner.adapter = adapter
         var spinnerIdx = 0
         for (cIdx in editEventViewModel.allCourses.indices) {

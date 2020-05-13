@@ -25,7 +25,9 @@ class NotificationBroadcast: BroadcastReceiver() {
 
         val notificationManager = NotificationManagerCompat.from(context)
 
-        notificationManager.notify(id, notification)
+        notification?.let{
+            notificationManager.notify(id, it)
+        }
 
     }
 

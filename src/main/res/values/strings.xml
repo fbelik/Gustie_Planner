@@ -68,4 +68,8 @@
     <string name="notifications">Notifications</string>
     <string name="navigation_draw_open">Open navigation drawer</string>
     <string name="navigation_draw_close">Close navigation drawer</string>
+    <string name="home_page_description">Thank you for downloading the Gustie Planner App! This app was developed by a Gustavus class of 2022 student, and is not a product of Gustavus.
+    If you have any questions or bugs to report, please contact me in the side toolbar.</string>
+    <string name="home_page_title">Welcome to Gustie Planner</string>
+    <string name="dark_theme">"Dark Theme    "</string>
 </resources>

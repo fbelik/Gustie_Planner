@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="?attr/backgroundColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,6 +60,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
                 android:background="@drawable/standard_button"
                 android:textColor="?attr/buttonTextColor"
                 android:text="@string/edit_event_example_date" />
@@ -90,21 +92,27 @@
                 android:layout_weight="1"
                 android:layout_gravity="center_horizontal"
                 android:layout_height="wrap_content"
-                android:text="@string/assignment" />
+                android:buttonTint="?attr/highlight"
+                android:text="@string/assignment"
+                android:textColor="?attr/textColor"/>
 
             <RadioButton
                 android:id="@+id/edit_event_exam_radio"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="@string/exam" />
+                android:buttonTint="?attr/highlight"
+                android:text="@string/exam"
+                android:textColor="?attr/textColor"/>
 
             <RadioButton
                 android:id="@+id/edit_event_event_radio"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="@string/event" />
+                android:buttonTint="?attr/highlight"
+                android:text="@string/event"
+                android:textColor="?attr/textColor"/>
 
         </RadioGroup>
 
@@ -139,6 +147,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="15dp"
             android:lines="3"
+            style="@style/EditTextBox"
             android:hint="@string/description_optional" />
 
         <LinearLayout
@@ -165,6 +174,7 @@
                     android:id="@+id/edit_event_new_notification"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:background="@drawable/circle_button"
                     android:src="@android:drawable/ic_menu_add" />
 
             </LinearLayout>
