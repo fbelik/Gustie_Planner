@@ -3,6 +3,8 @@ package com.bignerdranch.android.gustieplanner
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.ComponentName
+import android.content.pm.PackageManager
 import android.os.Build
 
 class GustiePlannerApplication: Application() {
@@ -17,6 +19,14 @@ class GustiePlannerApplication: Application() {
         EventRepository.initialize(this)
 
         createNotificationChannel()
+
+        // Enable notification receiver
+        val receiver = ComponentName(applicationContext, NotificationBroadcast::class.java)
+        applicationContext.packageManager.setComponentEnabledSetting(
+            receiver,
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
+        )
     }
 
     private fun createNotificationChannel() {

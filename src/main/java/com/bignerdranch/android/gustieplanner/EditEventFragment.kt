@@ -368,11 +368,8 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
             this.set(Calendar.MINUTE, oldMin)
             this.set(Calendar.SECOND, 0)
         }
-
         editEventViewModel.eventNotifications[notificationIdx] = calendar.time
-        val view = notificationContainer.getChildAt(notificationIdx)
-        val dateBtn = view.findViewById<Button>(R.id.notification_view_date)
-        dateBtn.text = SimpleDateFormat(date_format_string).format(calendar.time)
+        updateUINotifications()
     }
 
     override fun onNotificationTimeSelected(hour: Int, minute: Int, notificationIdx: Int) {
@@ -383,9 +380,7 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
             set(Calendar.SECOND, 0)
         }
         editEventViewModel.eventNotifications[notificationIdx] = cal.time
-        val view = notificationContainer.getChildAt(notificationIdx)
-        val timeBtn = view.findViewById<Button>(R.id.notification_view_time)
-        timeBtn.text = SimpleDateFormat(time_format_string).format(cal.time)
+        updateUINotifications()
     }
 
     private fun fieldsFilled(): Boolean {

@@ -6,24 +6,19 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
-import android.widget.CompoundButton
 import android.widget.FrameLayout
-import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.children
-import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import java.lang.Exception
@@ -217,31 +212,31 @@ class MainActivity : AppCompatActivity(), HomeFragment.Callbacks, ProfileFragmen
             if (dates[idx].time != 0L) {
                 val activityIntent = Intent(this, NotificationBroadcast::class.java)
 
-                val notification = NotificationCompat.Builder(this, GustiePlannerApplication.NOTIFICATION_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setContentTitle(title)
-                    .setContentText(description)
-                    .setColor(Color.BLUE)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_REMINDER)
-                    .setAutoCancel(true)
-                    .build()
-
                 activityIntent.putExtra(NotificationBroadcast.NOTIFICATION_ID, notificationIds[idx])
-                activityIntent.putExtra(NotificationBroadcast.NOTIFICATION, notification)
+                activityIntent.putExtra(NotificationBroadcast.NOTIFICATION_TITLE, title)
+                activityIntent.putExtra(NotificationBroadcast.NOTIFICATION_DESCRIPTION, description)
 
                 val pendingIntent = PendingIntent.getBroadcast(this, notificationIds[idx], activityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-                val notificationTime = SystemClock.elapsedRealtime() + (dates[idx].time - currentDateTime)
-
-                Log.d(TAG, "Setting alarm with id ${notificationIds[idx]} for ${(notificationTime-SystemClock.elapsedRealtime())/1000} sec in future")
+                Log.d("MainActivity", "Setting alarm for ${(dates[idx].time - System.currentTimeMillis()) / 1000} secs")
 
                 val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, notificationTime, pendingIntent)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, dates[idx].time, pendingIntent)
+                }
+                else {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, dates[idx].time, pendingIntent)
+                }
 
             }
             else {
-                notificationManager.cancel(notificationIds[idx])
+                val activityIntent = Intent(this, NotificationBroadcast::class.java)
+                activityIntent.putExtra(NotificationBroadcast.NOTIFICATION_ID, notificationIds[idx])
+                activityIntent.putExtra(NotificationBroadcast.NOTIFICATION_TITLE, title)
+                activityIntent.putExtra(NotificationBroadcast.NOTIFICATION_DESCRIPTION, description)
+                val pendingIntent = PendingIntent.getBroadcast(this, notificationIds[idx], activityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                alarmManager.cancel(pendingIntent)
             }
         }
     }
