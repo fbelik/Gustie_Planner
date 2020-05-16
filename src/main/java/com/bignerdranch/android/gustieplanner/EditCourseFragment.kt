@@ -10,10 +10,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.skydoves.colorpickerview.ColorPickerDialog
@@ -144,6 +146,9 @@ class EditCourseFragment: Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString().length > 2) {
                     startMinute.setText(s?.slice(0 until 2))
+                }
+                else if (s.toString().length == 2) {
+                    closeKeyboard()
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -346,6 +351,14 @@ class EditCourseFragment: Fragment() {
                 startMinute.text.isNotEmpty() &&
                 courseLength.text.isNotEmpty() &&
                 courseColor != null)
+    }
+
+    private fun closeKeyboard() {
+        activity?.let {
+            val view = it.currentFocus
+            val imm = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.currentFocus?.windowToken, 0)
+        }
     }
 
     companion object {

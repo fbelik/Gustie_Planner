@@ -18,10 +18,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="30dp"
         android:gravity="center_horizontal"
         style="@style/BodyText"
         android:text="@string/home_page_description" />
+
+    <Switch
+        android:id="@+id/do_not_show_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:textColor="?attr/textColor"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/toggle_see_on_startup" />
 
     <Switch
         android:id="@+id/toggle_dark_theme"

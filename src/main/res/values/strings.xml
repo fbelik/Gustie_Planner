@@ -72,4 +72,13 @@
     If you have any questions or bugs to report, please contact me in the side toolbar.</string>
     <string name="home_page_title">Welcome to Gustie Planner</string>
     <string name="dark_theme">"Dark Theme    "</string>
+    <string name="toggle_see_on_startup">"Select to not see this on startup    "</string>
+    <string name="intro_page">Intro Page</string>
+    <string name="moodle_webpage">Moodle Webpage</string>
+    <string name="gustavus_webpage">Gustavus Webpage</string>
+    <string name="contact_me">Contact me</string>
+    <string name="daily_schedule">Daily Schedule</string>
+    <string name="class_schedule">Class Schedule</string>
+    <string name="profile">Profile</string>
+    <string name="other">Other</string>
 </resources>

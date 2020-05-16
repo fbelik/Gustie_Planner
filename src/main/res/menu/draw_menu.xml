@@ -4,26 +4,29 @@
     <group android:checkableBehavior="single" >
         <item android:id="@+id/nav_profile"
             android:icon="@drawable/ic_profile"
-            android:title="Profile" />
+            android:title="@string/profile" />
         <item android:id="@+id/nav_weekly_schedule"
             android:icon="@drawable/ic_weekly_schedule"
-            android:title="Class Schedule" />
+            android:title="@string/class_schedule" />
         <item android:id="@+id/nav_daily_schedule"
             android:icon="@drawable/ic_daily_schedule"
-            android:title="Daily Schedule" />
+            android:title="@string/daily_schedule" />
     </group>
 
-    <item android:title="Other">
+    <item android:title="@string/other">
         <menu>
             <item android:id="@+id/nav_email_contact"
                 android:icon="@drawable/ic_mail"
-                android:title="Contact me"/>
+                android:title="@string/contact_me"/>
             <item android:id="@+id/nav_gustavus_webpage"
                 android:icon="@drawable/ic_web"
-                android:title="Gustavus Webpage"/>
+                android:title="@string/gustavus_webpage"/>
             <item android:id="@+id/nav_moodle_webpage"
                 android:icon="@drawable/ic_web"
-                android:title="Moodle Webpage"/>
+                android:title="@string/moodle_webpage"/>
+            <item android:id="@+id/nav_homepage"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/intro_page"/>
         </menu>
     </item>
 

@@ -184,6 +184,32 @@ class EditEventFragment: Fragment(), EditEventDatePickerFragment.Callbacks, Edit
                         }
                         courseSpinner.setSelection(spinnerIdx)
                     }
+                    val currentTime = Date().time
+                    if (it.notification1_time.time != 0L && it.notification1_time.time < currentTime) {
+                        it.notification1_time.time = 0L
+                    }
+                    if (it.notification2_time.time != 0L && it.notification2_time.time < currentTime) {
+                        it.notification2_time.time = 0L
+                    }
+                    if (it.notification3_time.time != 0L && it.notification3_time.time < currentTime) {
+                        it.notification3_time.time = 0L
+                    }
+                    if (it.notification4_time.time != 0L && it.notification4_time.time < currentTime) {
+                        it.notification4_time.time = 0L
+                    }
+                    if (it.notification5_time.time != 0L && it.notification5_time.time < currentTime) {
+                        it.notification5_time.time = 0L
+                    }
+                    for (i in 0 until 5) {
+                        if (it.notification1_time.time != 0L) {
+                            break
+                        }
+                        it.notification1_time.time = it.notification2_time.time
+                        it.notification2_time.time = it.notification3_time.time
+                        it.notification3_time.time = it.notification4_time.time
+                        it.notification4_time.time = it.notification5_time.time
+                        it.notification5_time.time = 0L
+                    }
                     courseSpinner.jumpDrawablesToCurrentState()
                     editEventViewModel.eventNotifications.clear()
                     if (it.notification1_time.time != 0L) {

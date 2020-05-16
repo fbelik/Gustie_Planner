@@ -11,6 +11,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -26,6 +27,7 @@ import java.util.*
 
 private const val TAG = "MainActivity"
 private const val IS_DARK = "is-dark"
+private const val SHOW_MSG = "show-message"
 
 class MainActivity : AppCompatActivity(), HomeFragment.Callbacks, ProfileFragment.Callbacks, DailyScheduleFragment.Callbacks, EditEventFragment.Callbacks {
 
@@ -33,6 +35,9 @@ class MainActivity : AppCompatActivity(), HomeFragment.Callbacks, ProfileFragmen
     private lateinit var fragmentHolder: FrameLayout
     private lateinit var drawer: DrawerLayout
     private lateinit var navigationView: NavigationView
+    private lateinit var doNotShowMsgBtn: Button
+
+    private var showMessage = true
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -60,6 +65,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.Callbacks, ProfileFragmen
 
         drawer = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
+
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_profile -> {
@@ -141,6 +147,16 @@ class MainActivity : AppCompatActivity(), HomeFragment.Callbacks, ProfileFragmen
                     }
                     true
                 }
+                R.id.nav_homepage -> {
+                    Log.d(TAG, "Starting intro page")
+                    val fragment = HomeFragment()
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_holder, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
                 else -> false
             }
         }
@@ -151,13 +167,35 @@ class MainActivity : AppCompatActivity(), HomeFragment.Callbacks, ProfileFragmen
 
         fragmentHolder = findViewById(R.id.fragment_holder)
 
+        showMessage = sharedPreferences.getBoolean(SHOW_MSG, true)
+
         if (savedInstanceState == null) {
-            val fragment = HomeFragment()
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragment_holder, fragment)
-                .commit()
+            if (showMessage) {
+                val fragment = HomeFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_holder, fragment)
+                    .commit()
+            }
+            else {
+                val fragment = CourseScheduleFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_holder, fragment)
+                    .commit()
+                for (item in navigationView.menu.children) {
+                    if (item.itemId == R.id.nav_weekly_schedule) {
+                        item.isChecked = true
+                    }
+                }
+            }
         }
+    }
+
+    override fun onDoNotShowMsg(dontShow: Boolean) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(SHOW_MSG, !dontShow)
+        editor.apply()
     }
 
     override fun onSwitchTheme(toDark: Boolean) {
@@ -196,11 +234,24 @@ class MainActivity : AppCompatActivity(), HomeFragment.Callbacks, ProfileFragmen
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
         }
-        else {
+        else if (showMessage) {
             super.onBackPressed()
             if (supportFragmentManager.backStackEntryCount == 0) {
                 for (item in navigationView.menu.children) {
                     item.isChecked = (false)
+                }
+            }
+        }
+        else {
+            super.onBackPressed()
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                for (item in navigationView.menu.children) {
+                    if (item.itemId == R.id.nav_weekly_schedule) {
+                        item.isChecked = true
+                    }
+                    else {
+                        item.isChecked = (false)
+                    }
                 }
             }
         }
@@ -209,7 +260,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.Callbacks, ProfileFragmen
     override fun createNotifications(title: String, description: String, dates: List<Date>, notificationIds: List<Int>) {
         val currentDateTime = Date().time
         for (idx in 0 until 5) {
-            if (dates[idx].time != 0L) {
+            if (dates[idx].time != 0L && dates[idx].time > currentDateTime) {
                 val activityIntent = Intent(this, NotificationBroadcast::class.java)
 
                 activityIntent.putExtra(NotificationBroadcast.NOTIFICATION_ID, notificationIds[idx])
